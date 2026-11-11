@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة التحدي الأخضر الاحترافية 🌿</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary: #1b5e20;
+            --primary-light: #4caf50;
+            --accent: #00e676;
+            --white: #ffffff;
+            --text-dark: #0d2818;
+            --correct-bg: #d4edda;
+            --correct-border: #28a745;
+            --wrong-bg: #f8d7da;
+            --wrong-border: #dc3545;
+            --shadow-glow: 0 15px 35px rgba(46, 125, 50, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        /* خلفية ديناميكية متحركة غنية بالمؤثرات */
+        body {
+            background: linear-gradient(-45deg, #0d2818, #1b5e20, #2e7d32, #4caf50);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* حاوية اللعبة الرئيسية */
+        .game-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 680px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), var(--shadow-glow);
+            padding: 45px 35px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .screen.active {
+            display: flex;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ===== الصفحة 1: المقدمة ===== */
+        .hero-badge {
+            background: #e8f5e9;
+            color: var(--primary);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            border: 1px solid var(--primary-light);
+            display: inline-block;
+        }
+
+        .main-title {
+            color: var(--primary);
+            font-size: 2.4rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .intro-icon-wrapper {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .intro-icon {
+            font-size: 90px;
+            display: inline-block;
+            animation: float3D 3.5s ease-in-out infinite;
+            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.15));
+        }
+
+        @keyframes float3D {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            50% { transform: translateY(-15px) rotate(5deg) scale(1.05); }
+        }
+
+        .intro-description {
+            font-size: 1.15rem;
+            color: #335c43;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .info-box {
+            background: #f1f8f3;
+            border-right: 4px solid var(--primary-light);
+            padding: 15px 20px;
+            border-radius: 12px;
+            text-align: right;
+            width: 100%;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            color: #2e5339;
+        }
+
+        .btn-main {
+            background: linear-gradient(45deg, #1b5e20, #4caf50);
+            color: var(--white);
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(46, 125, 50, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(46, 125, 50, 0.5);
+            background: linear-gradient(45deg, #0d2818, #2e7d32);
+        }
+
+        /* ===== الصفحة 2: الأسئلة ===== */
+        .progress-header {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #e0e0e0;
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4caf50, #00e676);
+            transition: width 0.5s ease;
+            border-radius: 6px;
+        }
+
+        .question-card-title {
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 25px;
+            line-height: 1.6;
+            text-align: right;
+            background: #f8fbf9;
+            padding: 20px;
+            border-radius: 18px;
+            border: 1px solid #e0eee3;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .option-btn {
+            background-color: var(--white);
+            border: 2px solid #d0e7d5;
+            padding: 18px 22px;
+            border-radius: 18px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: right;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background-color: #e8f5e9;
+            border-color: var(--primary-light);
+            transform: translateX(-6px);
+            box-shadow: 0 6px 15px rgba(46, 125, 50, 0.15);
+        }
+
+        @keyframes shakeWrong {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .option-btn.wrong-shake {
+            animation: shakeWrong 0.4s ease-in-out;
+            background-color: var(--wrong-bg) !important;
+            border-color: var(--wrong-border) !important;
+            color: #721c24;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); }
+            70% { box-shadow: 0 0 0 18px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+
+        .option-btn.correct-pulse {
+            background-color: var(--correct-bg) !important;
+            border-color: var(--correct-border) !important;
+            color: #155724;
+            animation: pulseGlow 1s infinite;
+        }
+
+        .option-btn[disabled] { cursor: default; }
+
+        .feedback-zone {
+            min-height: 95px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .reaction-emoji {
+            font-size: 55px;
+            display: none;
+        }
+
+        .reaction-emoji.active-pop {
+            display: block;
+            animation: popReaction 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popReaction {
+            0% { transform: scale(0) rotate(-20deg); }
+            80% { transform: scale(1.3) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .feedback-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .feedback-text.show { display: block; }
+        .feedback-text.correct { color: var(--correct-border); }
+        .feedback-text.wrong { color: var(--wrong-border); }
+
+        .next-step-btn {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .next-step-btn.show {
+            display: inline-block;
+            animation: slideUp 0.3s ease;
+        }
+
+        /* ===== الصفحة 3: النتائج ===== */
+        .result-badge {
+            font-size: 90px;
+            margin-bottom: 10px;
+            animation: trophyBounce 2s ease infinite;
+        }
+
+        @keyframes trophyBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            margin: 20px 0 25px 0;
+        }
+
+        .stat-card {
+            background: #f4f9f5;
+            border: 1px solid #d4e8d8;
+            padding: 18px;
+            border-radius: 18px;
+            text-align: center;
+        }
+
+        .stat-card .val {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .stat-card .lbl {
+            font-size: 0.9rem;
+            color: #557761;
+            font-weight: 700;
+        }
+
+        .analysis-text {
+            font-size: 1.15rem;
+            color: #2e5339;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            background: #eef7f0;
+            padding: 20px;
+            border-radius: 16px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-card">
+        
+        <!-- ===== الصفحة 1: المقدمة ===== -->
+        <div id="screen-1" class="screen active">
+            <span class="hero-badge">مشروع التسويق الأخضر الاستراتيجي 🍃</span>
+            <h1 class="main-title">تحدي التسويق الأخضر</h1>
+            
+            <div class="intro-icon-wrapper">
+                <div class="intro-icon">🌍</div>
+            </div>
+
+            <p class="intro-description">
+                أهلاً بك في منصة الاختبار التفاعلية المتقدمة! صُممت هذه اللعبة لقياس وتطوير المفاهيم البيئية والتسويقية الحديثة عبر تجربة بصرية وصوتية ممتعة.
+            </p>
+
+            <div class="info-box">
+                💡 <b>معلومات الاختبار:</b> يتكون التحدي من 4 أسئلة دقيقة تهدف لتقييم فهمك لتقنيات واستراتيجيات المنتجات المستدامة.
+            </div>
+
+            <button class="btn-main" onclick="goToScreen(2); startGame();">الانتقال للتحدي ابدأ الان ➔</button>
+        </div>
+
+        <!-- ===== الصفحة 2: الأسئلة ===== -->
+        <div id="screen-2" class="screen">
+            <div class="progress-header">
+                <div class="progress-info">
+                    <span id="question-count-text">السؤال 1 من 4</span>
+                    <span id="progress-percent-text">0%</span>
+                </div>
+                <div class="progress-container">
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+            </div>
+            
+            <div id="question-text" class="question-card-title">نص السؤال يظهر هنا...</div>
+
+            <div id="options-container" class="options-grid"></div>
+
+            <div class="feedback-zone">
+                <div id="reaction" class="reaction-emoji"></div>
+                <div id="feedback-text" class="feedback-text"></div>
+                <button id="next-btn" class="btn-main next-step-btn" onclick="nextQuestion()">السؤال التالي ➔</button>
+            </div>
+        </div>
+
+        <!-- ===== الصفحة 3: النتائج ===== -->
+        <div id="screen-3" class="screen">
+            <div id="result-icon" class="result-badge">🏆</div>
+            <h1 class="main-title" style="margin-bottom: 5px;">تقرير الأداء النهائي</h1>
+            <p style="color: #666; font-size: 0.95rem;">تم إكمال الاختبار وتوثيق الإحصائيات</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div id="stat-score" class="val">0 / 4</div>
+                    <div class="lbl">النتيجة النهائية</div>
+                </div>
+                <div class="stat-card">
+                    <div id="stat-percent" class="val">0%</div>
+                    <div class="lbl">نسبة الإتقان</div>
+                </div>
+            </div>
+
+            <div id="result-analysis" class="analysis-text">
+                جاري تحليل الأداء...
+            </div>
+
+            <button class="btn-main" onclick="goToScreen(1)">إعادة التحدي 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "ما العناصر الأربعة للتسويق الأخضر؟",
+                options: [
+                    "أ) الإنتاج والتخزين والنقل والبيع.",
+                    "ب) المنتج والسعر والتوزيع والترويج.",
+                    "ج) الجودة والتكلفة والإعلان والتصنيع."
+                ],
+                correct: 1
+            },
+            {
+                question: "أي مما يلي يُعد تطبيقًا لمبدأ تقليل استخدام المواد الضارة في المنتج الأخضر؟",
+                options: [
+                    "أ) استخدام مواد خام أقل ضررًا بالبيئة.",
+                    "ب) زيادة استخدام المواد الكيميائية الضارة.",
+                    "ج) استخدام عبوات يصعب إعادة تدويرها."
+                ],
+                correct: 0
+            },
+            {
+                question: "ما الفرق بين إعادة الاستخدام وإعادة التدوير؟",
+                options: [
+                    "أ) إعادة الاستخدام تعني الاستفادة من المنتج مجددًا، وإعادة التدوير تعني تحويله إلى مواد قابلة للاستخدام.",
+                    "ب) إعادة الاستخدام تعني إصلاح المنتج، وإعادة التدوير تعني بيعه مرة أخرى.",
+                    "ج) إعادة الاستخدام تعني تصنيع منتج جديد، وإعادة التدوير تعني صيانة المنتج."
+                ],
+                correct: 0
+            },
+            {
+                question: "ما المقصود بالمنتج الأخضر؟",
+                options: [
+                    "أ) منتج مرتفع السعر.",
+                    "ب) منتج مصنوع للاستخدام مرة واحدة.",
+                    "ج) منتج صديق للبيئة ويقلل الأضرار البيئية."
+                ],
+                correct: 2
+            }
+        ];
+
+        const correctReactions = ["🎉", "👏", "🌟", "✅", "🥳"];
+        const wrongReactions = ["😅", "❌", "🤔", "💔", "🧐"];
+
+        const correctMessages = ["إجابة رائعة وصحيحة!", "ممتاز! اختيار ذكي جداً", "إجابة بطلة!", "صحيح! استمر بهذا المستوى العالي"];
+        const wrongMessages = ["إجابة خاطئة! حاول التركيز في السؤال القادم", "للأسف غير صحيحة، حاول الاستفادة من التصحيح!", "معوضة في السؤال القادم!"];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let audioCtx = null;
+
+        function goToScreen(screenNumber) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen-${screenNumber}`).classList.add('active');
+        }
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // محاكاة مخصصة للأصوات (تصفيق عند الصحيح وتنبيه خطأ)
+        function playSound(type) {
+            initAudio();
+            const now = audioCtx.currentTime;
+
+            if (type === 'correct') {
+                // صوت محاكاة التصفيق والتهليل التشجيعي (Clapping Simulation)
+                const numClaps = 12;
+                for (let i = 0; i < numClaps; i++) {
+                    const clapTime = now + (i * 0.05) + (Math.random() * 0.03);
+                    const bufferSize = audioCtx.sampleRate * 0.04;
+                    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let j = 0; j < bufferSize; j++) {
+                        data[j] = Math.random() * 2 - 1;
+                    }
+
+                    const noise = audioCtx.createBufferSource();
+                    noise.buffer = buffer;
+
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.value = 1000 + Math.random() * 800;
+
+                    const gain = audioCtx.createGain();
+                    gain.gain.setValueAtTime(0.4, clapTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, clapTime + 0.04);
+
+                    noise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    noise.start(clapTime);
+                }
+
+                // إضافة نغمة انتصار احتفالية مرافقة للتصفيق
+                const osc = audioCtx.createOscillator();
+                const mainGain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.15);
+                osc.frequency.setValueAtTime(783.99, now + 0.3);
+                mainGain.gain.setValueAtTime(0.2, now);
+                mainGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                osc.connect(mainGain);
+                mainGain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.6);
+
+            } else {
+                // صوت تنبيه خطأ منخفض وحاد (Buzzer Sound)
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc1.type = 'sawtooth';
+                osc2.type = 'sawtooth';
+
+                osc1.frequency.setValueAtTime(150, now);
+                osc2.frequency.setValueAtTime(156, now);
+
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 0.4);
+                osc2.stop(now + 0.4);
+            }
+        }
+
+        function startGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const currentQuiz = quizData[currentQuestionIndex];
+            
+            const progressPercent = Math.round(((currentQuestionIndex) / quizData.length) * 100);
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+            document.getElementById('progress-percent-text').innerText = `${progressPercent}%`;
+            document.getElementById('question-count-text').innerText = `السؤال ${currentQuestionIndex + 1} من ${quizData.length}`;
+            document.getElementById('question-text').innerText = currentQuiz.question;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            currentQuiz.options.forEach((optionText, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optionText;
+                btn.onclick = () => selectOption(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            resetFeedback();
+        }
+
+        function resetFeedback() {
+            document.getElementById('reaction').className = 'reaction-emoji';
+            document.getElementById('feedback-text').className = 'feedback-text';
+            document.getElementById('next-btn').className = 'btn-main next-step-btn';
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            const currentQuiz = quizData[currentQuestionIndex];
+            const optionButtons = document.querySelectorAll('.option-btn');
+            
+            optionButtons.forEach(btn => btn.setAttribute('disabled', 'true'));
+
+            const reactionEl = document.getElementById('reaction');
+            const feedbackTextEl = document.getElementById('feedback-text');
+            const nextBtn = document.getElementById('next-btn');
+
+            if (selectedIndex === currentQuiz.correct) {
+                score++;
+                selectedBtn.classList.add('correct-pulse');
+                
+                reactionEl.innerText = correctReactions[Math.floor(Math.random() * correctReactions.length)];
+                feedbackTextEl.innerText = correctMessages[Math.floor(Math.random() * correctMessages.length)];
+                feedbackTextEl.classList.add('correct');
+
+                playSound('correct');
+            } else {
+                selectedBtn.classList.add('wrong-shake');
+                optionButtons[currentQuiz.correct].classList.add('correct-pulse');
+
+                reactionEl.innerText = wrongReactions[Math.floor(Math.random() * wrongReactions.length)];
+                feedbackTextEl.innerText = wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
+                feedbackTextEl.classList.add('wrong');
+
+                playSound('wrong');
+            }
+
+            reactionEl.classList.add('active-pop');
+            feedbackTextEl.classList.add('show');
+
+            if (currentQuestionIndex === quizData.length - 1) {
+                nextBtn.innerText = "الانتقال لصفحة النتائج 🏆";
+            } else {
+                nextBtn.innerText = "السؤال التالي ➔";
+            }
+            nextBtn.classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResultsScreen();
+            }
+        }
+
+        function showResultsScreen() {
+            goToScreen(3);
+            
+            const percentage = Math.round((score / quizData.length) * 100);
+            document.getElementById('stat-score').innerText = `${score} / ${quizData.length}`;
+            document.getElementById('stat-percent').innerText = `${percentage}%`;
+
+            const analysisEl = document.getElementById('result-analysis');
+            const resultIcon = document.getElementById('result-icon');
+
+            if (score === quizData.length) {
+                resultIcon.innerText = "🌟";
+                analysisEl.innerHTML = "<b>تقدير: ممتاز جداً (100%)</b><br>استثنائي! لقد أظهرت فهماً كاملاً وشاملاً لجميع عناصر ومبادئ التسويق الأخضر والاستدامة البيئية.";
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+                }
+            } else if (score >= quizData.length / 2) {
+                resultIcon.innerText = "🎖️";
+                analysisEl.innerHTML = "<b>تقدير: جيد جداً</b><br>أداء متتقدم ومبشر! لديك معرفة جيدة بمفاهيم المنتجات الخضراء وإعادة التدوير.";
+            } else {
+                resultIcon.innerText = "💡";
+                analysisEl.innerHTML = "<b>تقدير: يحتاج مراجعة</b><br>محاولة جيدة! يُنصح بمراجعة مفاهيم عناصر التسويق الأخضر وإعادة المحاولة لتحقيق نتيجة أفضل.";
+            }
+        }
+    </script>
+</body>
+</html>
